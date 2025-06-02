@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold Loan Application</title>
+  <style>
+    :root {
+      --primary-color: #f57c00;
+      --primary-light: #fff8e1;
+      --primary-dark: #e65100;
+      --accent-color: #ffd740;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #757575;
+      --success-color: #4caf50;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 25px 30px;
+      border-bottom: 4px solid var(--accent-color);
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 15px;
+    }
+  
+    .form-container {
+      padding: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .section-title {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 5px;
+      height: 20px;
+      background-color: var(--primary-color);
+      margin-right: 10px;
+      border-radius: 3px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -15px;
+    }
+
+    .form-group {
+      flex: 1 0 calc(50% - 30px);
+      margin: 0 15px 20px;
+      min-width: 200px;
+    }
+
+    .form-group.full-width {
+      flex: 1 0 calc(100% - 30px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 6px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.2);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 15px;
+      padding-right: 40px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--dark-gray);
+      margin-top: 5px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      box-shadow: none;
+    }
+
+    button.secondary:hover {
+      background: var(--primary-light);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .error {
+      color: #e74c3c;
+      background: #ffeaea;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    /* Prediction Result Styles */
+    .prediction-result {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-color);
+    }
+
+    .prediction-result.show {
+      display: block;
+    }
+
+    .prediction-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .prediction-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .prediction-score {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 8px 15px;
+      border-radius: 6px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .prediction-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .prediction-metric {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: var(--dark-gray);
+      margin-bottom: 5px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .defaulter-status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .defaulter-status.defaulter {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+
+    .defaulter-status.non-defaulter {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+
+    @media (max-width: 768px) {
+      .form-group {
+        flex: 1 0 calc(100% - 30px);
+      }
+      
+      .actions {
+        flex-direction: column-reverse;
+        gap: 15px;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .progress-indicator::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--medium-gray);
+      z-index: 1;
+    }
+
+    .step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid var(--medium-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step.active {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+
+    .step.completed {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="officer-dashboard.html" style="position: absolute; top: 20px; right: 20px; padding: 10px 15px; background-color: rgba(255, 255, 255, 0.8); color: #333; text-decoration: none; border-radius: 5px; font-size: 14px;">Back to Dashboard</a>
+      <h1>Gold Loan Application</h1>
+      <p>Please fill out the form below to apply for a gold loan</p>
+    </div>
+    
+    <div class="form-container">
+      <div class="progress-indicator">
+        <div class="step active">1</div>
+        <div class="step">2</div>
+        <div class="step">3</div>
+        <div class="step">4</div>
+      </div>
+      
+      <form id="goldLoanForm">
+        <!-- Personal Information Section -->
+        <div class="section">
+          <h2 class="section-title">Personal Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="userName">Full Name *</label>
+              <input type="text" id="userName" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="age">Age *</label>
+              <input type="number" id="age" name="age" min="18" max="70" required>
+              <div class="hint">Must be between 18-70 years</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bankAccount">Bank Account Number (last 4 digits)</label>
+              <input type="text" id="bankAccount" name="bank_account" maxlength="4" pattern="[0-9]{4}">
+              <div class="hint">Enter the last 4 digits of your bank account</div>
+            </div>
+            <div class="form-group">
+              <label for="maritalStatus">Marital Status</label>
+              <select id="maritalStatus" name="marital_status">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dependents">Number of Dependents</label>
+              <input type="number" id="dependents" name="dependents" min="0" max="10">
+            </div>
+            <div class="form-group">
+              <label for="employmentType">Employment Type</label>
+              <select id="employmentType" name="employment_type">
+                <option value="Salaried">Salaried</option>
+                <option value="Self-Employed">Self-Employed</option>
+                <option value="Unemployed">Unemployed</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Financial Information Section -->
+        <div class="section">
+          <h2 class="section-title">Financial Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="annualIncome">Annual Income *</label>
+              <input type="number" id="annualIncome" name="income" min="50000" required>
+            </div>
+            <div class="form-group">
+              <label for="jobStability">Job Stability (Years)</label>
+              <input type="number" id="jobStability" name="job_stability" min="0" max="50">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="creditScore">Credit Score *</label>
+              <input type="number" id="creditScore" name="credit_score" min="300" max="850" required>
+            </div>
+            <div class="form-group">
+              <label for="existingEMIs">Existing EMIs (monthly payment)</label>
+              <input type="number" id="existingEMIs" name="existing_emis" min="0">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="loanDefaults">Past Loan Defaults</label>
+              <select id="loanDefaults" name="loan_defaults">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Gold Details Section -->
+        <div class="section">
+          <h2 class="section-title">Gold Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="goldOwnership">Do you own the gold? *</label>
+              <select id="goldOwnership" name="gold_ownership" required>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goldPurity">Gold Purity (karats) *</label>
+              <input type="number" id="goldPurity" name="gold_purity" min="18" max="24" required>
+              <div class="hint">Must be between 18-24 karats</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="goldWeight">Gold Weight (grams) *</label>
+              <input type="number" id="goldWeight" name="gold_weight" min="10" required>
+              <div class="hint">Minimum 10 grams required</div>
+            </div>
+            <div class="form-group">
+              <label for="goldValue">Estimated Gold Value *</label>
+              <input type="number" id="goldValue" name="gold_value" min="0" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="valuationCertificate">Gold Valuation Certificate Available?</label>
+              <select id="valuationCertificate" name="valuation_certificate">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goldStorage">Gold Storage Preference</label>
+              <select id="goldStorage" name="gold_storage">
+                <option value="Bank">Bank Vault</option>
+                <option value="Home">Home Safe</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="goldInsurance">Gold Insurance Available?</label>
+              <select id="goldInsurance" name="gold_insurance">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loan Details Section -->
+        <div class="section">
+          <h2 class="section-title">Loan Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="loanAmount">Loan Amount Requested *</label>
+              <input type="number" id="loanAmount" name="amount" min="10000" required>
+            </div>
+            <div class="form-group">
+              <label for="loanTenure">Loan Tenure (Months) *</label>
+              <input type="number" id="loanTenure" name="tenure" min="6" max="36" required>
+              <div class="hint">6-36 months</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="loanPurpose">Purpose of Loan</label>
+              <select id="loanPurpose" name="loan_purpose">
+                <option value="Business">Business</option>
+                <option value="Personal">Personal</option>
+                <option value="Medical">Medical Emergency</option>
+                <option value="Education">Education</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="repaymentMethod">Preferred Repayment Method</label>
+              <select id="repaymentMethod" name="repayment_method">
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Lump Sum">Lump Sum</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="preferredEMI">Preferred EMI Amount</label>
+              <input type="number" id="preferredEMI" name="preferred_emi" min="0">
+            </div>
+            <div class="form-group">
+              <label for="coApplicant">Co-applicant</label>
+              <select id="coApplicant" name="co_applicant">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="error" id="errorMessage"></div>
+        
+        <div class="loading" id="loadingMessage">
+          <p>Processing your application... Please wait.</p>
+        </div>
+
+        <!-- Prediction Result Section -->
+        <div class="prediction-result" id="predictionResult">
+          <div class="prediction-header">
+            <div class="prediction-title">Loan Prediction Result</div>
+            <div class="prediction-score" id="predictionScore"></div>
+          </div>
+          
+          <div class="prediction-details">
+            <div class="prediction-metric">
+              <div class="metric-label">Risk Level</div>
+              <div class="metric-value" id="riskLevel"></div>
+            </div>
+            <div class="prediction-metric">
+              <div class="metric-label">Approval Probability</div>
+              <div class="metric-value" id="approvalProbability"></div>
+            </div>
+            <div class="prediction-metric">
+              <div class="metric-label">Decline Probability</div>
+              <div class="metric-value" id="declineProbability"></div>
+            </div>
+            <div class="prediction-metric full-width">
+              <div class="metric-label">Prediction Reason</div>
+              <div class="metric-value" id="predictionReason"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="actions">
+          <button type="submit" id="submitBtn">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('goldLoanForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = event.target;
+        const formData = new FormData(form);
+        const jsonData = {};
+
+        // Convert form data to JSON, using correct backend keys
+        formData.forEach((value, key) => {
+             // Map frontend names to backend expected names where they differ
+            const backendKeyMap = {
+                'userName': 'name',
+                'age': 'age',
+                'bankAccount': 'bank_account',
+                'maritalStatus': 'marital_status',
+                'dependents': 'dependents',
+                'employmentType': 'employment_type',
+                'annualIncome': 'income',
+                'jobStability': 'job_stability',
+                'creditScore': 'credit_score',
+                'existingEMIs': 'existing_emis',
+                'loanDefaults': 'loan_defaults',
+                'goldOwnership': 'gold_ownership',
+                'goldPurity': 'gold_purity',
+                'goldWeight': 'gold_weight',
+                'goldValue': 'gold_value',
+                'valuationCertificate': 'valuation_certificate',
+                'goldStorage': 'gold_storage',
+                'loanAmount': 'loan_amount', // Assuming loanAmount from form is loan_amount for backend
+                'loanTenure': 'loan_term',   // Assuming loanTenure from form is loan_term for backend
+                'ltvRatio': 'ltv_ratio'
+            };
+            const backendKey = backendKeyMap[key] || key; // Use mapped key or original if not mapped
+            jsonData[backendKey] = value;
+        });
+        
+        // Add loan type explicitly for backend
+        jsonData['loan_type'] = 'gold';
+
+        const loadingIndicator = document.getElementById('loadingMessage');
+        const errorMessages = document.getElementById('errorMessage');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        loadingIndicator.classList.add('show');
+        errorMessages.classList.remove('show');
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch('/submit_loan/gold', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+
+            // Check for HTTP errors first
+            if (!response.ok) {
+                const errorText = await response.text(); // Read response as text for better error info
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+
+            const result = await response.json();
+
+            // Check if the backend reported success and included prediction data
+            if (result.success && result.prediction_result) {
+                // Remove any previous prediction results
+                const existingResults = form.querySelectorAll('.defaulter-status, .prediction-metric.full-width');
+                existingResults.forEach(el => el.remove());
+
+                // Display success message
+                const successMessageDiv = document.createElement('div');
+                successMessageDiv.classList.add('defaulter-status', 'non-defaulter'); // Using a class for green success background
+                successMessageDiv.textContent = 'Application submitted successfully!';
+                form.insertBefore(successMessageDiv, document.getElementById('predictionResult')); // Insert before the prediction result section
+
+                // Hide the detailed prediction result section initially
+                const predictionResultDiv = document.getElementById('predictionResult');
+                predictionResultDiv.classList.remove('show');
+
+                // Display the Defaulter/Non-Defaulter status in a dedicated banner
+                const statusBanner = document.createElement('div');
+                statusBanner.classList.add('defaulter-status');
+                
+                // Use result.prediction_result to get the prediction status
+                const prediction = result.prediction_result;
+                const isApproved = prediction.prediction === 'Approved' || prediction.risk_level === 'Low Risk';
+
+                if (isApproved) {
+                    statusBanner.classList.add('non-defaulter');
+                    statusBanner.textContent = '✅ Non-Defaulter'; // Add checkmark icon
+                } else {
+                    statusBanner.classList.add('defaulter');
+                    statusBanner.innerHTML = '&#9888; Defaulter'; // Add warning icon
+                }
+                form.insertBefore(statusBanner, predictionResultDiv); // Insert before the prediction result div
+
+                // Display the reason below the status banner
+                const reasonDiv = document.createElement('div');
+                reasonDiv.classList.add('prediction-metric', 'full-width'); // Reuse some styling classes
+                reasonDiv.innerHTML = `
+                    <div class="metric-label">Reason:</div>
+                    <div class="metric-value">${prediction.prediction_reason || prediction.reason || 'No specific reason provided.'}</div>
+                `;
+                 form.insertBefore(reasonDiv, predictionResultDiv); // Insert before the prediction result div
+
+                // The detailed predictionResultDiv remains hidden as per the screenshot requirement
+
+            } else {
+                // Handle backend errors or missing prediction data when response.ok is true but success is false or prediction_result is missing
+                 const existingResults = form.querySelectorAll('.defaulter-status, .prediction-metric.full-width');
+                 existingResults.forEach(el => el.remove());
+
+                errorMessages.textContent = result.message || 'An error occurred processing the application.';
+                errorMessages.classList.add('show');
+                 console.error('Backend reported success: ' + result.success + ', prediction_result missing: ' + !result.prediction_result, result);
+            }
+
+        } catch (error) {
+             // Remove any previous prediction results on network error or HTTP errors
+            const existingResults = form.querySelectorAll('.defaulter-status, .prediction-metric.full-width');
+            existingResults.forEach(el => el.remove());
+
+            errorMessages.textContent = `Error submitting application: ${error.message || 'Network error or server not responding.'}`;
+            errorMessages.classList.add('show');
+            console.error('Error during fetch or response processing:', error);
+        } finally {
+            loadingIndicator.classList.remove('show');
+            submitButton.disabled = false;
+        }
+    });
+  </script>
+</body>
+</html>

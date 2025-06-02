@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Loan Application with ML Prediction</title>
+  <style>
+    :root {
+      --primary-color: #4caf50;
+      --primary-light: #e8f5e9;
+      --primary-dark: #388e3c;
+      --accent-color: #81c784;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #757575;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --danger-color: #f4436;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 25px 30px;
+      border-bottom: 4px solid var(--accent-color);
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 15px;
+    }
+  
+    .form-container {
+      padding: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .section-title {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 5px;
+      height: 20px;
+      background-color: var(--primary-color);
+      margin-right: 10px;
+      border-radius: 3px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -15px;
+    }
+
+    .form-group {
+      flex: 1 0 calc(50% - 30px);
+      margin: 0 15px 20px;
+      min-width: 200px;
+    }
+
+    .form-group.full-width {
+      flex: 1 0 calc(100% - 30px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 6px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 15px;
+      padding-right: 40px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--dark-gray);
+      margin-top: 5px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      box-shadow: none;
+    }
+
+    button.secondary:hover {
+      background: var(--primary-light);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .error {
+      color: #e74c3c;
+      background: #ffeaea;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .success {
+      color: #4caf50;
+      background: #e8f5e8;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: none;
+      text-align: center;
+    }
+
+    .success.show {
+      display: block;
+    }
+
+    .prediction-result {
+      background: #f8f9fa;
+      border: 2px solid var(--medium-gray);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .prediction-result.show {
+      display: block;
+    }
+
+    .prediction-result.approved {
+      border-color: var(--success-color);
+      background: #f0f9f0;
+    }
+
+    .prediction-result.declined {
+      border-color: var(--danger-color);
+      background: #fff5f5;
+    }
+
+    .prediction-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .prediction-title.approved {
+      color: var(--success-color);
+    }
+
+    .prediction-title.declined {
+      color: var(--danger-color);
+    }
+
+    .prediction-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .prediction-metric {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--medium-gray);
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--dark-gray);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .metric-value {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .json-output {
+      background: #f8f9fa;
+      border: 1px solid var(--medium-gray);
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .json-output.show {
+      display: block;
+    }
+
+    .json-output pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .download-btn {
+      margin-top: 10px;
+      background: var(--success-color);
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .form-group {
+        flex: 1 0 calc(100% - 30px);
+      }
+      
+      .actions {
+        flex-direction: column-reverse;
+        gap: 15px;
+      }
+      
+      button {
+        width: 100%;
+      }
+
+      .prediction-details {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .progress-indicator::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--medium-gray);
+      z-index: 1;
+    }
+
+    .step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid var(--medium-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step.active {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+
+    .step.completed {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+      color: white;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .defaulter-status {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .defaulter-status.non-defaulter {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+
+    .defaulter-status.defaulter {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+    }
+
+    .risk-factors {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    .risk-factors h4 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+
+    .risk-factors ul {
+      margin-left: 20px;
+      color: #856404;
+    }
+
+    .recommendation {
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    .recommendation h4 {
+      color: #004085;
+      margin-bottom: 10px;
+    }
+
+    .recommendation p {
+      color: #004085;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="officer-dashboard.html" style="position: absolute; top: 20px; right: 20px; padding: 10px 15px; background-color: rgba(255, 255, 255, 0.8); color: #333; text-decoration: none; border-radius: 5px; font-size: 14px;">Back to Dashboard</a>
+      <h1>Car Loan Application with ML Prediction</h1>
+      <p>Apply for a car loan and get instant default risk assessment using machine learning</p>
+    </div>
+    
+    <div class="form-container">
+      <div class="progress-indicator">
+        <div class="step active">1</div>
+        <div class="step">2</div>
+        <div class="step">3</div>
+        <div class="step">4</div>
+      </div>
+      
+      <form id="carLoanForm">
+        <!-- Personal Information Section -->
+        <div class="section">
+          <h2 class="section-title">Personal Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="userName">Full Name *</label>
+              <input type="text" id="userName" name="userName" required>
+            </div>
+            <div class="form-group">
+              <label for="age">Age *</label>
+              <input type="number" id="age" name="age" min="18" max="70" required>
+              <div class="hint">Must be between 18-70 years</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="maritalStatus">Marital Status</label>
+              <select id="maritalStatus" name="maritalStatus">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dependents">Number of Dependents</label>
+              <input type="number" id="dependents" name="dependents" min="0" max="10" value="0">
+            </div>
+            <div class="form-group">
+              <label for="employmentType">Employment Type</label>
+              <select id="employmentType" name="employmentType">
+                <option value="Salaried">Salaried</option>
+                <option value="Self-Employed">Self-Employed</option>
+                <option value="Unemployed">Unemployed</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Financial Information Section -->
+        <div class="section">
+          <h2 class="section-title">Financial Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="annualIncome">Annual Income *</label>
+              <input type="number" id="annualIncome" name="annualIncome" min="100000" required>
+            </div>
+            <div class="form-group">
+              <label for="jobStability">Job Stability (Years)</label>
+              <input type="number" id="jobStability" name="jobStability" min="0" max="50" value="1">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="creditScore">Credit Score *</label>
+              <input type="number" id="creditScore" name="creditScore" min="300" max="850" required>
+            </div>
+            <div class="form-group">
+              <label for="existingLoans">Existing Loans</label>
+              <input type="number" id="existingLoans" name="existingLoans" min="0" value="0">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="existingEMIs">Existing EMIs (monthly payment)</label>
+              <input type="number" id="existingEMIs" name="existingEMIs" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label for="loanDefaults">Past Loan Defaults</label>
+              <select id="loanDefaults" name="loanDefaults">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Car Details Section -->
+        <div class="section">
+          <h2 class="section-title">Car Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="carBrand">Car Brand *</label>
+              <select id="carBrand" name="carBrand" required>
+                <option value="">Select Brand</option>
+                <option value="Toyota">Toyota</option>
+                <option value="Honda">Honda</option>
+                <option value="Maruti Suzuki">Maruti Suzuki</option>
+                <option value="Hyundai">Hyundai</option>
+                <option value="Mahindra">Mahindra</option>
+                <option value="Ford">Ford</option>
+                <option value="BMW">BMW</option>
+                <option value="Mercedes">Mercedes</option>
+                <option value="Audi">Audi</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="carInsurance">Car Insurance Available?</label>
+              <select id="carInsurance" name="carInsurance">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="downPaymentMade">Down Payment Made</label>
+              <select id="downPaymentMade" name="downPaymentMade">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loan Details Section -->
+        <div class="section">
+          <h2 class="section-title">Loan Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="loanAmount">Loan Amount Requested *</label>
+              <input type="number" id="loanAmount" name="loanAmount" min="100000" required>
+            </div>
+            <div class="form-group">
+              <label for="repaymentDuration">Repayment Duration (Months) *</label>
+              <input type="number" id="repaymentDuration" name="repaymentDuration" min="12" max="84" required>
+              <div class="hint">12-84 months</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="purposeOfLoan">Purpose of Loan</label>
+              <select id="purposeOfLoan" name="purposeOfLoan">
+                <option value="Personal">Personal Use</option>
+                <option value="Business">Business Use</option>
+                <option value="Commercial">Commercial Use</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="error" id="errorMessage"></div>
+        <div class="success" id="successMessage"></div>
+        
+        <div class="loading" id="loadingMessage">
+          <p>Processing your application and running ML prediction... Please wait.</p>
+        </div>
+
+        <!-- Defaulter Status Section -->
+        <div class="defaulter-status" id="defaulterStatus" style="display: none;">
+          <div id="defaulterResult"></div>
+        </div>
+
+        <!-- Prediction Result Section -->
+        <div class="prediction-result" id="predictionResult">
+          <div class="prediction-title" id="predictionTitle">
+            <span id="predictionIcon">🤖</span>
+            ML Model Prediction Result
+          </div>
+          <div class="prediction-details">
+            <div class="prediction-metric">
+              <div class="metric-label">Loan Status</div>
+              <div class="metric-value" id="loanStatus">-</div>
+            </div>
+            <div class="prediction-metric">
+              <div class="metric-label">Default Classification</div>
+              <div class="metric-value" id="defaultClassification">-</div>
+            </div>
+            <div class="prediction-metric">
+              <div class="metric-label">Approval Probability</div>
+              <div class="metric-value" id="approvalProb">-</div>
+            </div>
+            <div class="prediction-metric">
+              <div class="metric-label">Decline Probability</div>
+              <div class="metric-value" id="declineProb">-</div>
+            </div>
+            <div class="prediction-metric full-width">
+              <div class="metric-label">Prediction Reason</div>
+              <div class="metric-value" id="predictionReason"></div>
+            </div>
+          </div>
+          <div id="predictionExplanation"></div>
+        </div>
+        
+        <div class="actions">
+          <button type="submit" id="submitBtn">Submit Application & Get ML Prediction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('carLoanForm'); // Get the form
+      const submitBtn = document.getElementById('submitBtn');
+      const loadingMessage = document.getElementById('loadingMessage');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      const predictionResult = document.getElementById('predictionResult');
+      const defaulterStatus = document.getElementById('defaulterStatus');
+      const predictionExplanation = document.getElementById('predictionExplanation');
+      const defaulterResultDiv = document.getElementById('defaulterResult');
+      const predictionTitle = document.getElementById('predictionTitle');
+      const predictionIcon = document.getElementById('predictionIcon');
+      const loanStatusMetric = document.getElementById('loanStatus');
+      const defaultClassificationMetric = document.getElementById('defaultClassification');
+      const approvalProbMetric = document.getElementById('approvalProb');
+      const declineProbMetric = document.getElementById('declineProb');
+      const predictionReasonMetric = document.getElementById('predictionReason');
+
+      // Check if essential elements are found
+      if (!form || !submitBtn || !loadingMessage || !errorMessage || !successMessage || !predictionResult || !defaulterStatus || !predictionExplanation || !defaulterResultDiv || !predictionTitle || !predictionIcon || !loanStatusMetric || !defaultClassificationMetric || !approvalProbMetric || !declineProbMetric || !predictionReasonMetric) {
+          console.error('Error: One or more required elements for the Car Loan form script not found!');
+          // Optionally disable the submit button or show a persistent error message here
+          if (submitBtn) submitBtn.disabled = true;
+          if (errorMessage) {
+              errorMessage.textContent = 'Error loading form. Please try again or contact support.';
+              errorMessage.classList.add('show');
+          }
+          return; // Stop script execution if elements are missing
+      }
+
+    // Form submission handler
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Clear previous messages and results
+        if (!errorMessage) { console.error('errorMessage is null before clear classes'); return; }
+        errorMessage.classList.remove('show');
+        if (!successMessage) { console.error('successMessage is null before clear classes'); return; }
+        successMessage.classList.remove('show');
+        if (!predictionResult) { console.error('predictionResult is null before clear classes'); return; }
+        predictionResult.classList.remove('show', 'approved', 'declined');
+        if (!defaulterStatus) { console.error('defaulterStatus is null before setting display to none'); return; }
+        defaulterStatus.style.display = 'none';
+        if (!predictionExplanation) { console.error('predictionExplanation is null before setting display to none'); return; }
+        predictionExplanation.style.display = 'none';
+
+        // Show loading message
+        if (!loadingMessage) { console.error('loadingMessage is null before adding show class'); return; }
+        loadingMessage.classList.add('show');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+
+        try {
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            // Submit to backend
+            const response = await fetch('/submit_loan/car', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            // Check for HTTP errors first
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+
+            const result = await response.json();
+
+            console.log('Backend response received:', result);
+
+            if (result.success && result.prediction_result) {
+                // Hide loading message
+                if (!loadingMessage) { console.error('loadingMessage is null after success before removing show class'); return; }
+                loadingMessage.classList.remove('show');
+
+                const prediction = result.prediction_result;
+
+                // Update defaulter status
+                if (!defaulterStatus) { console.error('defaulterStatus is null before setting display to block'); return; }
+                defaulterStatus.style.display = 'block';
+                if (!defaulterStatus) { console.error('defaulterStatus is null before setting className'); return; }
+                defaulterStatus.className = `defaulter-status ${prediction.prediction === 'Approved' ? 'non-defaulter' : 'defaulter'}`;
+                if (!defaulterResultDiv) { console.error('defaulterResultDiv is null before setting textContent'); return; }
+                defaulterResultDiv.textContent = prediction.prediction === 'Approved' ? '✅ Non-Defaulter' : '⚠️ Defaulter';
+
+                // Display prediction reason separately
+                let reasonDiv = document.getElementById('predictionReasonDisplay');
+                 if (!reasonDiv) {
+                     reasonDiv = document.createElement('div');
+                     reasonDiv.id = 'predictionReasonDisplay';
+                     reasonDiv.style.marginTop = '15px';
+                     reasonDiv.style.padding = '15px';
+                     reasonDiv.style.background = '#f8f9fa';
+                     reasonDiv.style.border = '1px solid #e0e0e0';
+                     reasonDiv.style.borderRadius = '6px';
+                     defaulterStatus.parentNode.insertBefore(reasonDiv, defaulterStatus.nextSibling);
+                 }
+                reasonDiv.innerHTML = `
+                    <h4>Reason:</h4>
+                    <p>${prediction.prediction_reason || prediction.reason || 'No specific reason provided.'}</p>
+                `;
+                if (!reasonDiv) { console.error('reasonDiv is null before setting display to block'); return; }
+                reasonDiv.style.display = 'block';
+
+                // Hide the detailed prediction result block
+                if (!predictionResult) { console.error('predictionResult is null before setting display to none'); return; }
+                predictionResult.style.display = 'none';
+                if (!predictionExplanation) { console.error('predictionExplanation is null before setting display to none'); return; }
+                predictionExplanation.style.display = 'none';
+
+                // Scroll to defaulter status
+                if (!defaulterStatus) { console.error('defaulterStatus is null before scrolling'); return; }
+                defaulterStatus.scrollIntoView({ behavior: 'smooth' });
+
+                // Show success message
+                if (!successMessage) { console.error('successMessage is null before adding show class'); return; }
+                successMessage.textContent = 'Application submitted successfully!';
+                successMessage.classList.add('show');
+
+            } else {
+                // Handle backend errors or missing prediction data
+                if (!loadingMessage) { console.error('loadingMessage is null after error before removing show class'); return; }
+                loadingMessage.classList.remove('show');
+                if (!errorMessage) { console.error('errorMessage is null before adding show class after error'); return; }
+                errorMessage.textContent = result.message || 'An error occurred processing the application.';
+                errorMessage.classList.add('show');
+                console.error('Backend reported success: ' + result.success + ', prediction_result missing: ' + !result.prediction_result, result);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+
+            // Hide loading message
+            if (!loadingMessage) { console.error('loadingMessage is null in catch block before removing show class'); return; }
+            loadingMessage.classList.remove('show');
+
+            // Show error message
+            if (!errorMessage) { console.error('errorMessage is null in catch block before adding show class'); return; }
+            errorMessage.textContent = error.message;
+            errorMessage.classList.add('show');
+        } finally {
+            // Reset button state
+            if (!submitBtn) { console.error('submitBtn is null in finally block'); return; }
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Application & Get ML Prediction';
+        }
+    });
+  });
+  </script>
+</body>
+</html>

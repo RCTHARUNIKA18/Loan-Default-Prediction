@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Educational Loan Application</title>
+  <style>
+    :root {
+      --primary-color: #2196f3;
+      --primary-light: #e3f2fd;
+      --primary-dark: #1565c0;
+      --accent-color: #03a9f4;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #757575;
+      --success-color: #4caf50;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 25px 30px;
+      border-bottom: 4px solid var(--accent-color);
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 15px;
+    }
+  
+    .form-container {
+      padding: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .section-title {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 5px;
+      height: 20px;
+      background-color: var(--primary-color);
+      margin-right: 10px;
+      border-radius: 3px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -15px;
+    }
+
+    .form-group {
+      flex: 1 0 calc(50% - 30px);
+      margin: 0 15px 20px;
+      min-width: 200px;
+    }
+
+    .form-group.full-width {
+      flex: 1 0 calc(100% - 30px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 6px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 15px;
+      padding-right: 40px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--dark-gray);
+      margin-top: 5px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      box-shadow: none;
+    }
+
+    button.secondary:hover {
+      background: var(--primary-light);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .error {
+      color: #e74c3c;
+      background: #ffeaea;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .form-group {
+        flex: 1 0 calc(100% - 30px);
+      }
+      
+      .actions {
+        flex-direction: column-reverse;
+        gap: 15px;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .progress-indicator::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--medium-gray);
+      z-index: 1;
+    }
+
+    .step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid var(--medium-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step.active {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+
+    .step.completed {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+      color: white;
+    }
+
+    .prediction-result.show {
+      display: block;
+    }
+
+    .prediction-result {
+      margin: 20px auto;
+      text-align: center;
+      max-width: 600px; /* Optional: Adjust max-width for better centering on wider screens */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="officer-dashboard.html" style="position: absolute; top: 20px; right: 20px; padding: 10px 15px; background-color: rgba(255, 255, 255, 0.8); color: #333; text-decoration: none; border-radius: 5px; font-size: 14px;">Back to Dashboard</a>
+      <h1>Educational Loan Application</h1>
+      <p>Please fill out the form below to apply for an educational loan</p>
+    </div>
+    
+    <div class="form-container">
+      <div class="progress-indicator">
+        <div class="step active">1</div>
+        <div class="step">2</div>
+        <div class="step">3</div>
+        <div class="step">4</div>
+        <div class="step">5</div>
+      </div>
+      
+      <form id="educationalLoanForm">
+        <!-- Personal Information Section -->
+        <div class="section">
+          <h2 class="section-title">Personal Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="studentName">Student Full Name *</label>
+              <input type="text" id="studentName" name="student_name" required>
+            </div>
+            <div class="form-group">
+              <label for="studentAge">Student Age *</label>
+              <input type="number" id="studentAge" name="student_age" min="16" max="35" required>
+              <div class="hint">Must be between 16-35 years</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="nationality">Nationality *</label>
+              <select id="nationality" name="nationality" required>
+                <option value="Indian">Indian</option>
+                <option value="Foreign">Foreign National</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bankAccount">Bank Account Number (last 4 digits)</label>
+              <input type="text" id="bankAccount" name="bank_account" maxlength="4" pattern="[0-9]{4}">
+              <div class="hint">Enter the last 4 digits of your bank account</div>
+            </div>
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <option value="General">General</option>
+                <option value="OBC">OBC</option>
+                <option value="SC">SC</option>
+                <option value="ST">ST</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Academic Information Section -->
+        <div class="section">
+          <h2 class="section-title">Academic Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courseLevel">Course Level *</label>
+              <select id="courseLevel" name="course_level" required>
+                <option value="Undergraduate">Undergraduate</option>
+                <option value="Postgraduate">Postgraduate</option>
+                <option value="Diploma">Diploma</option>
+                <option value="PhD">PhD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="courseType">Course Type *</label>
+              <select id="courseType" name="course_type" required>
+                <option value="Engineering">Engineering</option>
+                <option value="Medical">Medical</option>
+                <option value="Management">Management</option>
+                <option value="Arts">Arts</option>
+                <option value="Science">Science</option>
+                <option value="Commerce">Commerce</option>
+                <option value="Law">Law</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="institutionType">Institution Type *</label>
+              <select id="institutionType" name="institution_type" required>
+                <option value="Government">Government</option>
+                <option value="Private">Private</option>
+                <option value="Deemed">Deemed University</option>
+                <option value="Foreign">Foreign University</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="institutionRanking">Institution Ranking (if known)</label>
+              <input type="number" id="institutionRanking" name="institution_ranking" min="1" max="1000">
+              <div class="hint">National ranking (1-1000)</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="previousGrade">Previous Academic Grade/Percentage *</label>
+              <input type="number" id="previousGrade" name="previous_grade" min="40" max="100" step="0.01" required>
+              <div class="hint">Enter percentage (40-100)</div>
+            </div>
+            <div class="form-group">
+              <label for="entranceExam">Entrance Exam Score</label>
+              <input type="number" id="entranceExam" name="entrance_exam_score" min="0" max="100">
+              <div class="hint">Percentile score (0-100)</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courseDuration">Course Duration (Years) *</label>
+              <input type="number" id="courseDuration" name="course_duration" min="1" max="10" required>
+            </div>
+            <div class="form-group">
+              <label for="studyLocation">Study Location *</label>
+              <select id="studyLocation" name="study_location" required>
+                <option value="Domestic">India</option>
+                <option value="Abroad">Abroad</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Financial Information Section -->
+        <div class="section">
+          <h2 class="section-title">Financial Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="parentIncome">Parent/Guardian Annual Income *</label>
+              <input type="number" id="parentIncome" name="parent_income" min="100000" required>
+              <div class="hint">Minimum ₹1,00,000 required</div>
+            </div>
+            <div class="form-group">
+              <label for="parentOccupation">Parent/Guardian Occupation *</label>
+              <select id="parentOccupation" name="parent_occupation" required>
+                <option value="Government Employee">Government Employee</option>
+                <option value="Private Employee">Private Employee</option>
+                <option value="Business">Business</option>
+                <option value="Professional">Professional</option>
+                <option value="Farmer">Farmer</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="creditScore">Family Credit Score</label>
+              <input type="number" id="creditScore" name="credit_score" min="300" max="850">
+              <div class="hint">If available (300-850)</div>
+            </div>
+            <div class="form-group">
+              <label for="existingLoans">Existing Family Loans/EMIs</label>
+              <input type="number" id="existingLoans" name="existing_loans" min="0">
+              <div class="hint">Monthly EMI amount in ₹</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="propertyOwnership">Property Ownership</label>
+              <select id="propertyOwnership" name="property_ownership">
+                <option value="Owned">Owned</option>
+                <option value="Rented">Rented</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="familyDependents">Family Dependents</label>
+              <input type="number" id="familyDependents" name="family_dependents" min="0" max="10">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loan Details Section -->
+        <div class="section">
+          <h2 class="section-title">Loan Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="totalCourseFee">Total Course Fee *</label>
+              <input type="number" id="totalCourseFee" name="total_course_fee" min="50000" required>
+              <div class="hint">Total fee for the entire course</div>
+            </div>
+            <div class="form-group">
+              <label for="loanAmount">Loan Amount Requested *</label>
+              <input type="number" id="loanAmount" name="loan_amount" min="50000" required>
+              <div class="hint">Amount you need to borrow</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="selfContribution">Self/Family Contribution</label>
+              <input type="number" id="selfContribution" name="self_contribution" min="0">
+              <div class="hint">Amount you can contribute</div>
+            </div>
+            <div class="form-group">
+              <label for="scholarshipAmount">Scholarship Amount (if any)</label>
+              <input type="number" id="scholarshipAmount" name="scholarship_amount" min="0">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="moratoriumPeriod">Moratorium Period Needed *</label>
+              <select id="moratoriumPeriod" name="moratorium_period" required>
+                <option value="6 months">6 months</option>
+                <option value="1 year">1 year</option>
+                <option value="Course duration">Full course duration</option>
+                <option value="Course + 6 months">Course + 6 months</option>
+                <option value="Course + 1 year">Course + 1 year</option>
+              </select>
+              <div class="hint">Period before starting EMI payments</div>
+            </div>
+            <div class="form-group">
+              <label for="repaymentTenure">Preferred Repayment Tenure (Years)</label>
+              <input type="number" id="repaymentTenure" name="repayment_tenure" min="5" max="20">
+              <div class="hint">5-20 years after course completion</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Additional Information Section -->
+        <div class="section">
+          <h2 class="section-title">Additional Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="coApplicant">Co-applicant Required *</label>
+              <select id="coApplicant" name="co_applicant" required>
+                <option value="Parent">Parent</option>
+                <option value="Guardian">Guardian</option>
+                <option value="Spouse">Spouse</option>
+                <option value="Sibling">Sibling</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="collateral">Collateral Available</label>
+              <select id="collateral" name="collateral">
+                <option value="No">No</option>
+                <option value="Property">Property</option>
+                <option value="Fixed Deposit">Fixed Deposit</option>
+                <option value="Insurance Policy">Insurance Policy</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="previousLoanDefaults">Any Previous Loan Defaults in Family</label>
+              <select id="previousLoanDefaults" name="previous_loan_defaults">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="workExperience">Work Experience (if any)</label>
+              <input type="number" id="workExperience" name="work_experience" min="0" max="15">
+              <div class="hint">Years of work experience</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="futureCareerPlan">Future Career Plans</label>
+              <select id="futureCareerPlan" name="future_career_plan">
+                <option value="Job in India">Job in India</option>
+                <option value="Job Abroad">Job Abroad</option>
+                <option value="Higher Studies">Higher Studies</option>
+                <option value="Entrepreneurship">Start Own Business</option>
+                <option value="Family Business">Join Family Business</option>
+                <option value="Undecided">Undecided</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        
+        <div class="loading" id="loadingMessage">
+          <p>Processing your application... Please wait.</p>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="submitBtn">Submit Application</button>
+        </div>
+      </form>
+    </div>
+    <!-- Prediction Result Section -->
+    <div class="prediction-result" id="predictionResult" style="display: none;">
+      <div class="prediction-header">
+        <div class="prediction-title">Loan Prediction Result</div>
+        <div class="prediction-score" id="predictionScore"></div>
+      </div>
+
+      <div class="prediction-details">
+        <div class="prediction-metric">
+          <div class="metric-label">Risk Level</div>
+          <div class="metric-value" id="riskLevel"></div>
+        </div>
+        <div class="prediction-metric" style="display: none;">
+          <div class="metric-label">Approval Probability</div>
+          <div class="metric-value" id="approvalProbability"></div>
+        </div>
+        <div class="prediction-metric" style="display: none;">
+          <div class="metric-label">Decline Probability</div>
+          <div class="metric-value" id="declineProbability"></div>
+        </div>
+        <div class="prediction-metric full-width" style="display: none;">
+          <div class="metric-label">Prediction Reason</div>
+          <div class="metric-value" id="predictionReason"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('educationalLoanForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const loadingMessage = document.getElementById('loadingMessage');
+      const errorMessage = document.getElementById('errorMessage');
+
+      // Check if elements exist before proceeding
+      if (!form || !submitBtn || !loadingMessage || !errorMessage) {
+          console.error('Required form or message elements not found!');
+          return; // Stop if essential elements are missing
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Clear previous errors and prediction results
+        if (!errorMessage) { console.error('errorMessage is null before classList.remove'); } else {
+          errorMessage.classList.remove('show');
+        }
+        // Comment out or remove the line that removes existing prediction results
+        // const existingPredictionResults = document.querySelectorAll('.prediction-result');
+        // existingPredictionResults.forEach(el => el.remove());
+
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+        if (!loadingMessage) { console.error('loadingMessage is null before classList.add'); } else {
+          loadingMessage.classList.add('show');
+        }
+
+        try {
+          // Collect form data
+          const formData = new FormData(this);
+          const data = {};
+          for (let [key, value] of formData.entries()) {
+            data[key] = value;
+          }
+
+          // Map frontend names to backend expected names
+          const mappedData = {
+            'Student_Age': parseInt(data.student_age),
+            'Gender': data.gender,
+            'Nationality': data.nationality,
+            'Bank_Account_last_4_digits': data.bank_account,
+            'Category': data.category,
+            'Course_Level': data.course_level,
+            'Course_Type': data.course_type,
+            'Institution_Type': data.institution_type,
+            'Institution_Ranking': parseInt(data.institution_ranking) || 0, // Handle potential empty or non-numeric input
+            'Previous_Academic_Grade': parseFloat(data.previous_grade),
+            'Entrance_Exam_Score': parseInt(data.entrance_exam_score) || 0, // Handle potential empty or non-numeric input
+            'Course_Duration_Years': parseInt(data.course_duration),
+            'Study_Location': data.study_location,
+            'Parent_Guardian_Annual_Income': parseInt(data.parent_income),
+            'Parent_Guardian_Occupation': data.parent_occupation,
+            'Family_Credit_Score': parseInt(data.credit_score) || 0, // Handle potential empty or non-numeric input
+            'Existing_Family_Loans_EMIs': parseInt(data.existing_loans) || 0, // Handle potential empty or non-numeric input
+            'Property_Ownership': data.property_ownership,
+            'Family_Dependents': parseInt(data.family_dependents) || 0, // Handle potential empty or non-numeric input
+            'Total_Course_Fee': parseInt(data.total_course_fee),
+            'Loan_Amount_Requested': parseInt(data.loan_amount),
+            'Self_Family_Contribution': parseInt(data.self_contribution) || 0, // Handle potential empty or non-numeric input
+            'Scholarship_Amount': parseInt(data.scholarship_amount) || 0, // Handle potential empty or non-numeric input
+            'Moratorium_Period': data.moratorium_period,
+            'Preferred_Repayment_Tenure_Years': parseInt(data.repayment_tenure) || 0, // Handle potential empty or non-numeric input
+            'Co_applicant_Required': data.co_applicant, // Ensure this field is mapped
+            'Collateral_Available': data.collateral, // Ensure this field is mapped
+            'Previous_Loan_Defaults_in_Family': data.previous_loan_defaults, // Ensure this field is mapped
+            'Work_Experience_Years': parseInt(data.work_experience) || 0, // Handle potential empty or non-numeric input
+            'Future_Career_Plans': data.future_career_plan, // Ensure this field is mapped
+            // Note: 'Student_Full_Name' is not used in prediction, so not included here
+            // Note: 'Loan_Type' is handled by the backend route '/submit_loan/education'
+          };
+
+          // Validate required fields using the original form data keys for error messages
+          const requiredFields = [
+            'student_name', // Added student name as required based on form field
+            'student_age', 'gender', 'nationality', 'course_level',
+            'course_type', 'institution_type', 'previous_grade', 'course_duration',
+            'study_location', 'parent_income', 'parent_occupation', 'total_course_fee',
+            'loan_amount', 'moratorium_period', 'co_applicant',
+            // Added other potentially required fields based on the form structure:
+            'bank_account',
+            'category',
+            'previous_loan_defaults',
+            'work_experience',
+            'future_career_plan',
+            'repayment_tenure'
+          ];
+
+          for (let field of requiredFields) {
+            if (!data[field] || (typeof data[field] === 'string' && data[field].trim() === '')) {
+              throw new Error(`Please fill in the ${field.replace(/_/g, ' ')} field.`);
+            }
+             // Additional check for numeric fields to ensure they are not just empty strings
+            if (['student_age', 'parent_income', 'total_course_fee', 'loan_amount'].includes(field)) {
+                 if (isNaN(parseInt(data[field])) || parseInt(data[field]) <= 0) {
+                     throw new Error(`Please enter a valid positive number for ${field.replace(/_/g, ' ')}.`);
+                 }
+             }
+             if (['previous_grade'].includes(field)) {
+                 if (isNaN(parseFloat(data[field])) || parseFloat(data[field]) <= 0) {
+                     throw new Error(`Please enter a valid positive number for ${field.replace(/_/g, ' ')}.`);
+                 }
+             }
+          }
+
+          // Additional validation
+          if (parseInt(data.loan_amount) > parseInt(data.total_course_fee)) {
+            throw new Error('Loan amount cannot exceed total course fee.');
+          }
+
+          if (parseInt(data.student_age) < 16 || parseInt(data.student_age) > 35) {
+            throw new Error('Student age must be between 16 and 35 years.');
+          }
+
+          if (parseFloat(data.previous_grade) < 40 || parseFloat(data.previous_grade) > 100) {
+            throw new Error('Previous academic grade must be between 40 and 100.');
+          }
+
+          // Submit to Flask backend
+          const response = await fetch('/submit_loan/education', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(mappedData) // Send mapped data
+          });
+
+          const result = await response.json();
+
+          console.log(result); // Add this line to inspect the response
+
+          if (result.success) {
+            // Show prediction result on the same page
+            const prediction = result.prediction_result;
+
+            if (prediction) {
+              const predictionResult = document.getElementById('predictionResult');
+              console.log('Value of predictionResult after getElementById:', predictionResult);
+              const predictionScore = document.getElementById('predictionScore');
+              const riskLevel = document.getElementById('riskLevel');
+
+              // Update prediction display
+              if (!predictionResult) { console.error('predictionResult is null before classList.add'); } else {
+                predictionResult.classList.add('show');
+              }
+              predictionResult.style.display = 'block';
+
+              // Add checks before accessing properties
+              predictionScore.textContent = prediction.prediction !== undefined ? prediction.prediction : 'N/A';
+              predictionScore.style.color = prediction.prediction === 'Approved' ? '#2e7d32' : '#c62828';
+
+              riskLevel.textContent = prediction.risk_level !== undefined ? prediction.risk_level : 'N/A';
+              riskLevel.style.color = prediction.risk_level === 'Low Risk' ? '#2e7d32' : '#c62828';
+
+              // Scroll to prediction result
+              predictionResult.scrollIntoView({ behavior: 'smooth' });
+
+            } else {
+              // Log an error if prediction object is missing
+              console.error('Error: Prediction data is missing in the backend response.', result);
+              throw new Error('Could not retrieve prediction results.');
+            }
+
+          } else {
+            throw new Error(result.message || 'Failed to submit application');
+          }
+
+        } catch (error) {
+          console.error('Error:', error);
+          // Remove any previous prediction results on error - keep this if we still want to clear on error
+          // const existingPredictionResults = document.querySelectorAll('.prediction-result');
+          // existingPredictionResults.forEach(el => el.remove());
+
+          if (!errorMessage) { console.error('errorMessage is null in catch block before textContent'); } else {
+            errorMessage.textContent = error.message;
+          }
+          if (!errorMessage) { console.error('errorMessage is null in catch block before classList.add'); } else {
+            errorMessage.classList.add('show');
+          }
+        } finally {
+          // Reset button state
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Application';
+          if (!loadingMessage) { console.error('loadingMessage is null in finally block before classList.remove'); } else {
+            loadingMessage.classList.remove('show');
+          }
+        }
+      });
+
+      // Auto-calculate loan amount validation
+      document.getElementById('totalCourseFee').addEventListener('input', function() {
+        const totalFee = parseInt(this.value) || 0;
+        const loanAmountField = document.getElementById('loanAmount');
+        loanAmountField.max = totalFee;
+      });
+
+      // Auto-calculate self contribution
+      function calculateContribution() {
+        const totalFee = parseInt(document.getElementById('totalCourseFee').value) || 0;
+        const loanAmount = parseInt(document.getElementById('loanAmount').value) || 0;
+        const scholarship = parseInt(document.getElementById('scholarshipAmount').value) || 0;
+        
+        const selfContribution = totalFee - loanAmount - scholarship;
+        if (selfContribution >= 0) {
+          document.getElementById('selfContribution').value = selfContribution;
+        }
+      }
+
+      document.getElementById('loanAmount').addEventListener('input', calculateContribution);
+      document.getElementById('scholarshipAmount').addEventListener('input', calculateContribution);
+    });
+  </script>
+</body>
+</html>

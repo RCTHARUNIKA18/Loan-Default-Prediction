@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Officer Dashboard | LoanPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #e8f1f5;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #00b8d8 0%, #0093ad 100%);
+            padding: 20px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 147, 173, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0093ad;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 15px;
+        }
+
+        .welcome-banner {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 147, 173, 0.1);
+            margin-bottom: 30px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .welcome-banner p {
+            color: #666;
+            max-width: 70%;
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 184, 216, 0.1) 0%, rgba(0, 147, 173, 0.1) 100%);
+            clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
+        }
+
+        .welcome-banner::before {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 184, 216, 0.05);
+            border-radius: 50%;
+            right: 50px;
+            top: -20px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .loan-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 147, 173, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .loan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 147, 173, 0.2);
+        }
+
+        .card-img-container {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loan-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .loan-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 50%);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .card-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00b8d8 0%, #0093ad 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 147, 173, 0.2);
+        }
+
+        .card-btn:hover {
+            background: linear-gradient(135deg, #00a6c4 0%, #007f96 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 147, 173, 0.3);
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #0093ad;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #053142;
+            color: white;
+            padding: 30px 15px;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .welcome-banner p {
+                max-width: 100%;
+            }
+
+            .welcome-banner::after {
+                display: none;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .fab {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo-text">
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                LoanPro
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">LO</div>
+            <div>Loan Officer</div>
+            <button class="logout-btn" onclick="location.href='login.html'">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <h1>Welcome back, Loan Officer!</h1>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard">
+            <!-- Car Loan Card -->
+            <div class="loan-card">
+                <div class="card-img-container">
+                    <img src="Gemini_Generated_Image_xmardsxmardsxmar.jpeg" alt="Home Loan">
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Car Loan</h3>
+                    <p class="card-description">Manage auto loan applications, approvals, and processing for customers seeking vehicle financing.</p>
+                    <a href="home.html" class="card-btn">Manage Car Loans</a>
+                    
+                </div>
+            </div>
+
+            <!-- Education Loan Card -->
+            <div class="loan-card">
+                <div class="card-img-container">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8ZWR1Y2F0aW9ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="Education Loan">
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Education Loan</h3>
+                    <p class="card-description">Process education financing for students pursuing higher education with competitive interest rates.</p>
+                    <a href="education-loan.html" class="card-btn">Manage Education Loans</a>
+                    
+                </div>
+            </div>
+
+            <!-- Gold Loan Card -->
+            <div class="loan-card">
+                <div class="card-img-container">
+                    <img src="https://images.unsplash.com/photo-1610375461246-83df859d849d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z29sZHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="Gold Loan">
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Gold Loan</h3>
+                    <p class="card-description">Quick loan processing against gold jewelry and assets with competitive market valuation.</p>
+                    <a href="gold-loan.html" class="card-btn">Manage Gold Loans</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Management System - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background-color: #e8f1f5;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* Animated background elements */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 184, 216, 0.05);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .circle-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            right: 5%;
+            animation-delay: 2s;
+        }
+        
+        .circle-3 {
+            width: 200px;
+            height: 200px;
+            top: 30%;
+            left: -50px;
+            animation-delay: 4s;
+        }
+        
+        .circle-4 {
+            width: 150px;
+            height: 150px;
+            bottom: 10%;
+            left: 25%;
+            animation-delay: 1s;
+        }
+        
+        .circle-5 {
+            width: 180px;
+            height: 180px;
+            top: 15%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-15px) translateX(15px);
+            }
+            50% {
+                transform: translateY(0) translateX(30px);
+            }
+            75% {
+                transform: translateY(15px) translateX(15px);
+            }
+        }
+        
+        .glowing-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00cfff;
+            opacity: 0.3;
+            animation: glow 8s infinite linear;
+        }
+        
+        @keyframes glow {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+        }
+        
+        /* Generate 20 particles at different positions */
+        .particle-1 { top: 10%; left: 20%; animation-delay: 0s; }
+        .particle-2 { top: 20%; left: 80%; animation-delay: 1s; }
+        .particle-3 { top: 40%; left: 10%; animation-delay: 2s; }
+        .particle-4 { top: 60%; left: 30%; animation-delay: 3s; }
+        .particle-5 { top: 80%; left: 60%; animation-delay: 4s; }
+        .particle-6 { top: 30%; left: 50%; animation-delay: 5s; }
+        .particle-7 { top: 70%; left: 70%; animation-delay: 6s; }
+        .particle-8 { top: 15%; left: 40%; animation-delay: 7s; }
+        .particle-9 { top: 85%; left: 25%; animation-delay: 0.5s; }
+        .particle-10 { top: 45%; left: 85%; animation-delay: 1.5s; }
+        .particle-11 { top: 25%; left: 15%; animation-delay: 2.5s; }
+        .particle-12 { top: 65%; left: 45%; animation-delay: 3.5s; }
+        .particle-13 { top: 95%; left: 75%; animation-delay: 4.5s; }
+        .particle-14 { top: 5%; left: 65%; animation-delay: 5.5s; }
+        .particle-15 { top: 55%; left: 5%; animation-delay: 6.5s; }
+        
+        /* Login container */
+        .login-container {
+            display: flex;
+            width: 900px;
+            height: 550px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 147, 173, 0.15);
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        /* Login form side */
+        .login-form {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Image side - now covering the full box */
+        .image-side {
+            flex: 1;
+            background: url('loan_prediction_background.jpeg.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Data visualization elements on image side */
+        .image-side::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" width="50" height="50" stroke="rgba(0,207,255,0.1)" stroke-width="1"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .image-side img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        /* Digital overlay animation */
+        .digital-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+            z-index: 1;
+        }
+        
+        .digital-line {
+            position: absolute;
+            background: rgba(0, 207, 255, 0.15);
+            height: 2px;
+            width: 100%;
+            animation: scanline 8s infinite linear;
+        }
+        
+        @keyframes scanline {
+            0% {
+                top: -10%;
+            }
+            100% {
+                top: 110%;
+            }
+        }
+        
+        .data-pulse {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 207, 255, 0.2);
+            transform: translate(-50%, -50%);
+            animation: pulse 4s infinite;
+        }
+        
+        .pulse-1 {
+            width: 100px;
+            height: 100px;
+            top: 30%;
+            left: 40%;
+            animation-delay: 0s;
+        }
+        
+        .pulse-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 50%;
+            animation-delay: 1s;
+        }
+        
+        .pulse-3 {
+            width: 70px;
+            height: 70px;
+            top: 70%;
+            left: 30%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Logo and form elements */
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo-text {
+            color: #0093ad;
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            color: #0093ad;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-text {
+            color: #777;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: #0093ad;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 147, 173, 0.1);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: #777;
+            cursor: pointer;
+        }
+        
+        .login-button {
+            background: linear-gradient(135deg, #00b8d8 0%, #0093ad 100%);
+            color: white;
+            border: none;
+            padding: 13px 0;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            width: 100%;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0, 147, 173, 0.3);
+        }
+        
+        .login-button:hover {
+            background: linear-gradient(135deg, #00a6c4 0%, #007f96 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 147, 173, 0.4);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #777;
+            font-size: 13px;
+        }
+        
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        .divider span {
+            padding: 0 15px;
+        }
+        
+        .social-login {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .social-btn svg {
+            margin-right: 10px;
+        }
+        
+        .social-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .signup-link {
+            margin-top: auto;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .signup-link a {
+            color: #0093ad;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Hidden elements for authentication */
+        #credentials {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background elements -->
+    <div class="animated-bg">
+        <div class="floating-circle circle-1"></div>
+        <div class="floating-circle circle-2"></div>
+        <div class="floating-circle circle-3"></div>
+        <div class="floating-circle circle-4"></div>
+        <div class="floating-circle circle-5"></div>
+
+        <!-- Glowing particles -->
+        <div class="glowing-particle particle-1"></div>
+        <div class="glowing-particle particle-2"></div>
+        <div class="glowing-particle particle-3"></div>
+        <div class="glowing-particle particle-4"></div>
+        <div class="glowing-particle particle-5"></div>
+        <div class="glowing-particle particle-6"></div>
+        <div class="glowing-particle particle-7"></div>
+        <div class="glowing-particle particle-8"></div>
+        <div class="glowing-particle particle-9"></div>
+        <div class="glowing-particle particle-10"></div>
+        <div class="glowing-particle particle-11"></div>
+        <div class="glowing-particle particle-12"></div>
+        <div class="glowing-particle particle-13"></div>
+        <div class="glowing-particle particle-14"></div>
+        <div class="glowing-particle particle-15"></div>
+    </div>
+
+    <!-- Login container with split layout -->
+    <div class="login-container">
+        <!-- Login form side -->
+        <div class="login-form">
+            <div class="logo">
+                <div class="logo-text">
+                    <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    LoanPro
+                </div>
+            </div>
+            
+            <h1>Log In</h1>
+            <p class="welcome-text">Welcome back! Please enter your details</p>
+            
+            <form id="loginForm" onsubmit="return validateLogin(event)">
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role">
+                        <option value="loan_officer">Loan Officer</option>
+                        <option value="manager">Branch Manager</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                        </svg>
+                    </span>
+                </div>
+                
+                <button type="submit" class="login-button">Log In</button>
+            </form>
+            
+            <div class="divider">
+                <span>Or Continue With</span>
+            </div>
+            
+            <div class="social-login">
+                <div class="social-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4285F4" viewBox="0 0 16 16">
+                        <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"/>
+                    </svg>
+                    &nbsp; Google
+                </div>
+                <div class="social-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#3b5998" viewBox="0 0 16 16">
+                        <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/>
+                    </svg>
+                    &nbsp; Facebook
+                </div>
+            </div>
+            
+            <div class="signup-link">
+                Don't have an account? <a href="#">Sign up</a>
+            </div>
+        </div>
+        
+        <!-- Image side - full coverage with digital overlay effects -->
+        <div class="image-side">
+            <!-- Background image is now set via CSS -->
+            
+            <!-- Digital overlay effects -->
+            <div class="digital-overlay">
+                <div class="digital-line"></div>
+                <div class="data-pulse pulse-1"></div>
+                <div class="data-pulse pulse-2"></div>
+                <div class="data-pulse pulse-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden credentials for validation -->
+    <div id="credentials" data-loan_officer="loan_user:officer123" data-manager="branch_mgr:manager456"></div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        }
+        
+        // Validate login credentials
+        function validateLogin(event) {
+            event.preventDefault();
+            
+            const role = document.getElementById('role').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Send login credentials to backend
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username, password: password, role: role })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the appropriate dashboard based on role received from backend
+                    if (data.role === 'officer') {
+                        window.location.href = 'officer-dashboard.html';
+                    } else if (data.role === 'manager') {
+                        window.location.href = 'manager-dashboard.html';
+                    } else {
+                        // Handle other roles or a default redirect
+                        window.location.href = '/'; // Redirect to home or a default page
+                    }
+                } else {
+                    alert(data.message || 'Login failed. Please check your credentials.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred during login.');
+            });
+            
+            return false; // Prevent default form submission
+        }
+    </script>
+</body>
+</html>
